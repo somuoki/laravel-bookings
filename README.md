@@ -1,9 +1,4 @@
 # Rinvex Bookings
-
-⚠️ This package is abandoned and no longer maintained. No replacement package was suggested. ⚠️
-
-👉 If you are interested to step on as the main maintainer of this package, please [reach out to me](https://twitter.com/omranic)!
-
 ---
 
 **Rinvex Bookings** is a generic resource booking system for Laravel, with the required tools to run your SAAS like services efficiently. It has a simple architecture, with powerful underlying to afford solid platform for your business.
