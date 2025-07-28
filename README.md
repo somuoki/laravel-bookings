@@ -1,38 +1,38 @@
-# Rinvex Bookings
+# Somuoki Bookings
 ---
 
-**Rinvex Bookings** is a generic resource booking system for Laravel, with the required tools to run your SAAS like services efficiently. It has a simple architecture, with powerful underlying to afford solid platform for your business.
+**Somuoki Bookings** is a generic resource booking system for Laravel, with the required tools to run your SAAS like services efficiently. It has a simple architecture, with powerful underlying to afford solid platform for your business.
 
-[![Packagist](https://img.shields.io/packagist/v/rinvex/laravel-bookings.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/rinvex/laravel-bookings)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/rinvex/laravel-bookings.svg?label=Scrutinizer&style=flat-square)](https://scrutinizer-ci.com/g/rinvex/laravel-bookings/)
-[![Travis](https://img.shields.io/travis/rinvex/laravel-bookings.svg?label=TravisCI&style=flat-square)](https://travis-ci.org/rinvex/laravel-bookings)
+[![Packagist](https://img.shields.io/packagist/v/somuoki/laravel-bookings.svg?label=Packagist&style=flat-square)](https://packagist.org/packages/somuoki/laravel-bookings)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/somuoki/laravel-bookings.svg?label=Scrutinizer&style=flat-square)](https://scrutinizer-ci.com/g/somuoki/laravel-bookings/)
+[![Travis](https://img.shields.io/travis/somuoki/laravel-bookings.svg?label=TravisCI&style=flat-square)](https://travis-ci.org/somuoki/laravel-bookings)
 [![StyleCI](https://styleci.io/repos/96481479/shield)](https://styleci.io/repos/96481479)
-[![License](https://img.shields.io/packagist/l/rinvex/laravel-bookings.svg?label=License&style=flat-square)](https://github.com/rinvex/laravel-bookings/blob/develop/LICENSE)
+[![License](https://img.shields.io/packagist/l/somuoki/laravel-bookings.svg?label=License&style=flat-square)](https://github.com/somuoki/laravel-bookings/blob/develop/LICENSE)
 
 
 ## Considerations
 
-- **Rinvex Bookings** is for bookable resources, and has nothing to do with price plans and subscriptions. If you're looking for subscription management system, you may have to look at **[rinvex/laravel-subscriptions](https://github.com/rinvex/laravel-subscriptions).**
-- **Rinvex Bookings** assumes that your resource model has at least three fields, `price` as a decimal field, and lastly `unit` as a string field which accepts one of (minute, hour, day, month) respectively.
-- Payments and ordering are out of scope for **Rinvex Bookings**, so you've to take care of this yourself. Booking price is calculated by this package, so you may need to hook into the process or listen to saved bookings to issue invoice, or trigger payment process.
-- You may extend **Rinvex Bookings** functionality to add features like: minimum and maximum units, and many more. These features may be supported natively sometime in the future.
+- **Somuoki Bookings** is for bookable resources, and has nothing to do with price plans and subscriptions. If you're looking for subscription management system, you may have to look at **[rinvex/laravel-subscriptions](https://github.com/rinvex/laravel-subscriptions).**
+- **Somuoki Bookings** assumes that your resource model has at least three fields, `price` as a decimal field, and lastly `unit` as a string field which accepts one of (minute, hour, day, month) respectively.
+- Payments and ordering are out of scope for **Somuoki Bookings**, so you've to take care of this yourself. Booking price is calculated by this package, so you may need to hook into the process or listen to saved bookings to issue invoice, or trigger payment process.
+- You may extend **Somuoki Bookings** functionality to add features like: minimum and maximum units, and many more. These features may be supported natively sometime in the future.
 
 
 ## Installation
 
 1. Install the package via composer:
     ```shell
-    composer require rinvex/laravel-bookings
+    composer require somuoki/laravel-bookings
     ```
 
 2. Publish resources (migrations and config files):
     ```shell
-    php artisan rinvex:publish:bookings
+    php artisan somuoki:publish:bookings
     ```
 
 3. Execute migrations via the following command:
     ```shell
-    php artisan rinvex:migrate:bookings
+    php artisan somuoki:migrate:bookings
     ```
 
 4. Done!
@@ -40,16 +40,16 @@
 
 ## Usage
 
-**Rinvex Bookings** has been specially made for Eloquent and simplicity has been taken very serious as in any other Laravel related aspect. 
+**Somuoki Bookings** has been specially made for Eloquent and simplicity has been taken very serious as in any other Laravel related aspect. 
 
 ### Add bookable functionality to your resource model
 
-To add bookable functionality to your resource model just use the `\Rinvex\Bookings\Traits\Bookable` trait like this:
+To add bookable functionality to your resource model just use the `\Somuoki\Bookings\Traits\Bookable` trait like this:
 
 ```php
 namespace App\Models;
 
-use Rinvex\Bookings\Traits\Bookable;
+use Somuoki\Bookings\Traits\Bookable;
 use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
@@ -62,13 +62,13 @@ That's it, you only have to use that trait in your Room model! Now your rooms wi
 
 ### Add bookable functionality to your customer model
 
-To add bookable functionality to your customer model just use the `\Rinvex\Bookings\Traits\HasBookings` trait like this:
+To add bookable functionality to your customer model just use the `\Somuoki\Bookings\Traits\HasBookings` trait like this:
 
 ```php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Bookings\Traits\HasBookings;
+use Somuoki\Bookings\Traits\HasBookings;
 
 class Customer extends Model
 {
@@ -86,7 +86,7 @@ Creating a new booking is straight forward, and could be done in many ways. Let'
 $room = \App\Models\Room::find(1);
 $customer = \App\Models\Customer::find(1);
 
-// Extends \Rinvex\Bookings\Models\BookableBooking
+// Extends \Somuoki\Bookings\Models\BookableBooking
 $serviceBooking = new \App\Models\ServiceBooking;
 
 // Create a new booking via resource model (customer, starts, ends)
@@ -105,14 +105,14 @@ $serviceBooking->make(['starts_at' => \Carbon\Carbon::now(), 'ends_at' => \Carbo
 > **Notes:**
 > - As you can see, there's many ways to create a new booking, use whatever suits your context.
 > - Booking price is calculated automatically on the fly according to the resource price, custom prices, and bookable Rates.
-> - **Rinvex Bookings** is intelegent enough to detect date format and convert if required, the above example show the explicitly correct format, but you still can write something like: 'Tomorrow 1pm' and it will be converted automatically for you.
+> - **Somuoki Bookings** is intelegent enough to detect date format and convert if required, the above example show the explicitly correct format, but you still can write something like: 'Tomorrow 1pm' and it will be converted automatically for you.
 
 ### Query booking models
 
 You can get more details about a specific booking as follows:
 
 ```php
-// Extends \Rinvex\Bookings\Models\BookableBooking
+// Extends \Somuoki\Bookings\Models\BookableBooking
 $serviceBooking = \App\Models\ServiceBooking::find(1);
 
 $bookable = $serviceBooking->bookable; // Get the owning resource model
@@ -127,7 +127,7 @@ $serviceBooking->isCancelled(); // Check if the booking is cancelled
 And as expected, you can query bookings by date as well:
 
 ```php
-// Extends \Rinvex\Bookings\Models\BookableBooking
+// Extends \Somuoki\Bookings\Models\BookableBooking
 $serviceBooking = new \App\Models\ServiceBooking;
 
 $pastBookings = $serviceBooking->past(); // Get the past bookings
@@ -156,7 +156,7 @@ $serviceBookingsOfCustomer = $serviceBooking->ofCustomer($customer)->get(); // G
 
 ### Create a new booking rate
 
-Bookable Rates are special criteria used to modify the default booking price. For example, let’s assume that you have a resource charged per hour, and you need to set a higher price for the first "2" hours to cover certain costs, while discounting pricing if booked more than "5" hours. That’s totally achievable through bookable Rates. Simply set the amount of units to apply this criteria on, and state the percentage you’d like to have increased or decreased from the default price using +/- signs, i.e. -10%, and of course select the operator from: (**`^`** means the first starting X units, **`<`** means when booking is less than X units, **`>`** means when booking is greater than X units). Allowed percentages could be between -100% and +100%.
+Bookable Rates are special criteria used to modify the default booking price. For example, let's assume that you have a resource charged per hour, and you need to set a higher price for the first "2" hours to cover certain costs, while discounting pricing if booked more than "5" hours. That's totally achievable through bookable Rates. Simply set the amount of units to apply this criteria on, and state the percentage you'd like to have increased or decreased from the default price using +/- signs, i.e. -10%, and of course select the operator from: (**`^`** means the first starting X units, **`<`** means when booking is less than X units, **`>`** means when booking is greater than X units). Allowed percentages could be between -100% and +100%.
 
 To create a new booking rate, follow these steps:
 
@@ -171,7 +171,7 @@ Alternatively you can create a new booking rate explicitly as follows:
 ```php
 $room = \App\Models\Room::find(1);
 
-// Extends \Rinvex\Bookings\Models\BookableRate
+// Extends \Somuoki\Bookings\Models\BookableRate
 $serviceRate = new \App\Models\ServiceRate;
 
 $serviceRate->make(['percentage' => '15', 'operator' => '^', 'amount' => 2])
@@ -191,7 +191,7 @@ $bookable = $serviceRate->bookable; // Get the owning resource model
 
 ### Create a new custom price
 
-Custom prices are set according to specific time based criteria. For example, let’s say you've a Coworking Space business, and one of your rooms is a Conference Room, and you would like to charge differently for both Monday and Wednesday. Will assume that Monday from 09:00 am till 05:00 pm is a peak hours, so you need to charge more, and Wednesday from 11:30 am to 03:45 pm is dead hours so you'd like to charge less! That's totally achievable through custom prices, where you can set both time frames and their prices too using +/- percentage. It works the same way as [Bookable Rates](#create-a-new-booking-rate) but on a time based criteria. Awesome, huh?
+Custom prices are set according to specific time based criteria. For example, let's say you've a Coworking Space business, and one of your rooms is a Conference Room, and you would like to charge differently for both Monday and Wednesday. Will assume that Monday from 09:00 am till 05:00 pm is a peak hours, so you need to charge more, and Wednesday from 11:30 am to 03:45 pm is dead hours so you'd like to charge less! That's totally achievable through custom prices, where you can set both time frames and their prices too using +/- percentage. It works the same way as [Bookable Rates](#create-a-new-booking-rate) but on a time based criteria. Awesome, huh?
 
 To create a custom price, follow these steps:
 
@@ -211,7 +211,7 @@ $bookable = $room->bookable; // Get the owning resource model
 
 > **Notes:**
 > - If you don't create any custom prices, then the resource will be booked at the default resource price.
-> - **Rinvex Bookings** is intelegent enough to detect time format and convert if required, the above example show the explicitly correct format, but you still can write something like: '09:00 am' and it will be converted automatically for you.
+> - **Somuoki Bookings** is intelegent enough to detect time format and convert if required, the above example show the explicitly correct format, but you still can write something like: '09:00 am' and it will be converted automatically for you.
 
 ### Query resource models
 
@@ -326,9 +326,7 @@ Bug reports, feature requests, and pull requests are very welcome.
 If you discover a security vulnerability within this project, please send an e-mail to [help@rinvex.com](help@rinvex.com). All security vulnerabilities will be promptly addressed.
 
 
-## About Rinvex
 
-Rinvex is a software solutions startup, specialized in integrated enterprise solutions for SMEs established in Alexandria, Egypt since June 2016. We believe that our drive The Value, The Reach, and The Impact is what differentiates us and unleash the endless possibilities of our philosophy through the power of software. We like to call it Innovation At The Speed Of Life. That’s how we do our share of advancing humanity.
 
 
 ## License

@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookings\Console\Commands;
+namespace Somuoki\Bookings\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Config;
 
 class RollbackCommand extends Command
 {
@@ -13,14 +14,14 @@ class RollbackCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'rinvex:rollback:bookings {--f|force : Force the operation to run when in production.}';
+    protected $signature = 'somuoki:rollback:bookings {--f|force : Force the operation to run when in production.}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Rollback Rinvex Bookings Tables.';
+    protected $description = 'Rollback Somuoki Bookings Tables.';
 
     /**
      * Execute the console command.
@@ -31,9 +32,9 @@ class RollbackCommand extends Command
     {
         $this->alert($this->description);
 
-        $path = config('rinvex.bookings.autoload_migrations') ?
-            'vendor/rinvex/laravel-bookings/database/migrations' :
-            'database/migrations/rinvex/laravel-bookings';
+        $path = Config::get('somuoki.bookings.autoload_migrations') ?
+            'vendor/somuoki/laravel-bookings/database/migrations' :
+            'database/migrations/somuoki/laravel-bookings';
 
         if (file_exists($path)) {
             $this->call('migrate:reset', [
@@ -41,7 +42,7 @@ class RollbackCommand extends Command
                 '--force' => $this->option('force'),
             ]);
         } else {
-            $this->warn('No migrations found! Consider publish them first: <fg=green>php artisan rinvex:publish:bookings</>');
+            $this->warn('No migrations found! Consider publish them first: <fg=green>php artisan somuoki:publish:bookings</>');
         }
 
         $this->line('');

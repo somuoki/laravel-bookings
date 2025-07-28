@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookings\Models;
+namespace Somuoki\Bookings\Models;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Rinvex\Support\Traits\ValidatingTrait;
+use Somuoki\Support\Traits\ValidatingTrait;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Spatie\SchemalessAttributes\SchemalessAttributes;
+use Spatie\SchemalessAttributes\Casts\SchemalessAttributes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 abstract class BookableBooking extends Model
@@ -53,16 +55,18 @@ abstract class BookableBooking extends Model
         'currency' => 'string',
         'formula' => 'json',
         'canceled_at' => 'datetime',
-        'options' => 'array',
+        'options' => SchemalessAttributes::class,
         'notes' => 'string',
     ];
 
     /**
-     * {@inheritdoc}
+     * The event map for the model.
+     *
+     * @var array
      */
-    protected $observables = [
-        'validating',
-        'validated',
+    protected $dispatchesEvents = [
+        'validating' => \Somuoki\Bookings\Events\ValidatingEvent::class,
+        'validated' => \Somuoki\Bookings\Events\ValidatedEvent::class,
     ];
 
     /**
@@ -87,7 +91,7 @@ abstract class BookableBooking extends Model
      */
     public function __construct(array $attributes = [])
     {
-        $this->setTable(config('rinvex.bookings.tables.bookable_bookings'));
+        $this->setTable(Config::get('somuoki.bookings.tables.bookable_bookings'));
         $this->mergeRules([
             'bookable_id' => 'required|integer',
             'bookable_type' => 'required|string|strip_tags|max:150',
@@ -132,19 +136,9 @@ abstract class BookableBooking extends Model
      *
      * @return \Spatie\SchemalessAttributes\SchemalessAttributes
      */
-    public function getOptionsAttribute(): SchemalessAttributes
-    {
-        return SchemalessAttributes::createForModel($this, 'options');
-    }
-
-    /**
-     * Scope with options attributes.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
     public function scopeWithOptions(): Builder
     {
-        return SchemalessAttributes::scopeWithSchemalessAttributes('options');
+        return $this->options->modelScope();
     }
 
     /**
@@ -159,7 +153,7 @@ abstract class BookableBooking extends Model
      *
      * @return array
      */
-    public function calculatePrice(Model $bookable, Carbon $startsAt, Carbon $endsAt = null, int $quantity = 1): array
+    public function calculatePrice(Model $bookable, \DateTimeInterface $startsAt, \DateTimeInterface $endsAt = null, int $quantity = 1): array
     {
         $totalUnits = 0;
 
@@ -171,7 +165,7 @@ abstract class BookableBooking extends Model
             default:
                 $method = 'add'.ucfirst($bookable->unit);
 
-                for ($date = clone $startsAt; $date->lt($endsAt ?? $date->addDay()); $date->{$method}()) {
+                for ($date = clone $startsAt; $date < ($endsAt ?? (clone $date)->add(new \DateInterval('P1D'))); $date->{$method}()) {
                     $totalUnits++;
                 }
 
@@ -246,7 +240,7 @@ abstract class BookableBooking extends Model
     {
         return $builder->whereNull('canceled_at')
                        ->whereNotNull('ends_at')
-                       ->where('ends_at', '<', now());
+                       ->where('ends_at', '<', Date::now());
     }
 
     /**
@@ -260,7 +254,7 @@ abstract class BookableBooking extends Model
     {
         return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
-                       ->where('starts_at', '>', now());
+                       ->where('starts_at', '>', Date::now());
     }
 
     /**
@@ -275,8 +269,8 @@ abstract class BookableBooking extends Model
         return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
                        ->whereNotNull('ends_at')
-                       ->where('starts_at', '<', now())
-                       ->where('ends_at', '>', now());
+                       ->where('starts_at', '<', Date::now())
+                       ->where('ends_at', '>', Date::now());
     }
 
     /**
@@ -303,7 +297,7 @@ abstract class BookableBooking extends Model
     {
         return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
-                       ->where('starts_at', '<', new Carbon($date));
+                       ->where('starts_at', '<', Date::parse($date));
     }
 
     /**
@@ -318,7 +312,7 @@ abstract class BookableBooking extends Model
     {
         return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
-                       ->where('starts_at', '>', new Carbon($date));
+                       ->where('starts_at', '>', Date::parse($date));
     }
 
     /**
@@ -334,8 +328,8 @@ abstract class BookableBooking extends Model
     {
         return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
-                       ->where('starts_at', '>=', new Carbon($startsAt))
-                       ->where('starts_at', '<=', new Carbon($endsAt));
+                       ->where('starts_at', '>=', Date::parse($startsAt))
+                       ->where('starts_at', '<=', Date::parse($endsAt));
     }
 
     /**
@@ -350,7 +344,7 @@ abstract class BookableBooking extends Model
     {
         return $builder->whereNull('canceled_at')
                        ->whereNotNull('ends_at')
-                       ->where('ends_at', '<', new Carbon($date));
+                       ->where('ends_at', '<', Date::parse($date));
     }
 
     /**
@@ -365,7 +359,7 @@ abstract class BookableBooking extends Model
     {
         return $builder->whereNull('canceled_at')
                        ->whereNotNull('ends_at')
-                       ->where('ends_at', '>', new Carbon($date));
+                       ->where('ends_at', '>', Date::parse($date));
     }
 
     /**
@@ -381,8 +375,8 @@ abstract class BookableBooking extends Model
     {
         return $builder->whereNull('canceled_at')
                        ->whereNotNull('ends_at')
-                       ->where('ends_at', '>=', new Carbon($startsAt))
-                       ->where('ends_at', '<=', new Carbon($endsAt));
+                       ->where('ends_at', '>=', Date::parse($startsAt))
+                       ->where('ends_at', '<=', Date::parse($endsAt));
     }
 
     /**
@@ -396,7 +390,7 @@ abstract class BookableBooking extends Model
     public function scopeCancelledBefore(Builder $builder, string $date): Builder
     {
         return $builder->whereNotNull('canceled_at')
-                       ->where('canceled_at', '<', new Carbon($date));
+                       ->where('canceled_at', '<', Date::parse($date));
     }
 
     /**
@@ -410,7 +404,7 @@ abstract class BookableBooking extends Model
     public function scopeCancelledAfter(Builder $builder, string $date): Builder
     {
         return $builder->whereNotNull('canceled_at')
-                       ->where('canceled_at', '>', new Carbon($date));
+                       ->where('canceled_at', '>', Date::parse($date));
     }
 
     /**
@@ -425,8 +419,8 @@ abstract class BookableBooking extends Model
     public function scopeCancelledBetween(Builder $builder, string $startsAt, string $endsAt): Builder
     {
         return $builder->whereNotNull('canceled_at')
-                       ->where('canceled_at', '>=', new Carbon($startsAt))
-                       ->where('canceled_at', '<=', new Carbon($endsAt));
+                       ->where('canceled_at', '>=', Date::parse($startsAt))
+                       ->where('canceled_at', '<=', Date::parse($endsAt));
     }
 
     /**
@@ -442,12 +436,12 @@ abstract class BookableBooking extends Model
     {
         return $builder->whereNull('canceled_at')
                        ->whereNotNull('starts_at')
-                       ->where('starts_at', '>=', new Carbon($startsAt))
+                       ->where('starts_at', '>=', Date::parse($startsAt))
                        ->where(function (Builder $builder) use ($endsAt) {
                            $builder->whereNull('ends_at')
                                  ->orWhere(function (Builder $builder) use ($endsAt) {
                                      $builder->whereNotNull('ends_at')
-                                           ->where('ends_at', '<=', new Carbon($endsAt));
+                                           ->where('ends_at', '<=', Date::parse($endsAt));
                                  });
                        });
     }
@@ -489,6 +483,8 @@ abstract class BookableBooking extends Model
      */
     public function isCurrent(): bool
     {
-        return ! $this->isCancelled() && Carbon::now()->between($this->starts_at, $this->ends_at);
+        return ! $this->isCancelled() &&
+               Date::now() >= $this->starts_at &&
+               Date::now() <= $this->ends_at;
     }
 }

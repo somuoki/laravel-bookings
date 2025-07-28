@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookings\Models;
+namespace Somuoki\Bookings\Models;
 
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Rinvex\Support\Traits\ValidatingTrait;
+use Illuminate\Support\Facades\Config;
+use Somuoki\Support\Traits\ValidatingTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TicketableBooking extends Model
@@ -74,7 +75,7 @@ class TicketableBooking extends Model
      */
     public function __construct(array $attributes = [])
     {
-        $this->setTable(config('rinvex.bookings.tables.ticketable_bookings'));
+        $this->setTable(Config::get('somuoki.bookings.tables.ticketable_bookings'));
         $this->mergeRules([
             'ticket_id' => 'required|integer',
             'customer_id' => 'required|integer',

@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookings\Traits;
+namespace Somuoki\Bookings\Traits;
 
 use Carbon\Carbon;
+use Somuoki\Bookings\Traits\BookingScopes;
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Bookings\Models\BookableBooking;
+use Somuoki\Bookings\Models\BookableBooking;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait Bookable
@@ -171,7 +172,7 @@ trait Bookable
      * @param string                              $startsAt
      * @param string                              $endsAt
      *
-     * @return \Rinvex\Bookings\Models\BookableBooking
+     * @return BookableBooking
      */
     public function newBooking(Model $customer, string $startsAt, string $endsAt): BookableBooking
     {
@@ -180,8 +181,8 @@ trait Bookable
             'bookable_type' => static::getMorphClass(),
             'customer_id' => $customer->getKey(),
             'customer_type' => $customer->getMorphClass(),
-            'starts_at' => (new Carbon($startsAt))->toDateTimeString(),
-            'ends_at' => (new Carbon($endsAt))->toDateTimeString(),
+            'starts_at' => Carbon::parse($startsAt)->toDateTimeString(),
+            'ends_at' => Carbon::parse($endsAt)->toDateTimeString(),
         ]);
     }
 }

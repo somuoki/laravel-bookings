@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookings\Models;
+namespace Somuoki\Bookings\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Support\Traits\ValidatingTrait;
+use Illuminate\Support\Facades\Config;
+use Somuoki\Support\Traits\ValidatingTrait;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -72,7 +73,7 @@ abstract class BookableRate extends Model
      */
     public function __construct(array $attributes = [])
     {
-        $this->setTable(config('rinvex.bookings.tables.bookable_rates'));
+        $this->setTable(Config::get('somuoki.bookings.tables.bookable_rates'));
         $this->mergeRules([
             'bookable_id' => 'required|integer',
             'bookable_type' => 'required|string|strip_tags|max:150',

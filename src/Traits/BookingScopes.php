@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookings\Traits;
+namespace Somuoki\Bookings\Traits;
 
-use Carbon\Carbon;
+
+use Illuminate\Support\Facades\Date;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait BookingScopes
@@ -19,7 +20,7 @@ trait BookingScopes
         return $this->bookings()
                     ->whereNull('canceled_at')
                     ->whereNotNull('ends_at')
-                    ->where('ends_at', '<', now());
+                    ->where('ends_at', '<', Date::now());
     }
 
     /**
@@ -32,7 +33,7 @@ trait BookingScopes
         return $this->bookings()
                     ->whereNull('canceled_at')
                     ->whereNotNull('starts_at')
-                    ->where('starts_at', '>', now());
+                    ->where('starts_at', '>', Date::now());
     }
 
     /**
@@ -46,8 +47,8 @@ trait BookingScopes
                     ->whereNull('canceled_at')
                     ->whereNotNull('starts_at')
                     ->whereNotNull('ends_at')
-                    ->where('starts_at', '<', now())
-                    ->where('ends_at', '>', now());
+                    ->where('starts_at', '<', Date::now())
+                    ->where('ends_at', '>', Date::now());
     }
 
     /**
@@ -73,7 +74,7 @@ trait BookingScopes
         return $this->bookings()
                     ->whereNull('canceled_at')
                     ->whereNotNull('starts_at')
-                    ->where('starts_at', '<', new Carbon($date));
+                    ->where('starts_at', '<', Date::parse($date));
     }
 
     /**
@@ -88,7 +89,7 @@ trait BookingScopes
         return $this->bookings()
                     ->whereNull('canceled_at')
                     ->whereNotNull('starts_at')
-                    ->where('starts_at', '>', new Carbon($date));
+                    ->where('starts_at', '>', Date::parse($date));
     }
 
     /**
@@ -104,8 +105,8 @@ trait BookingScopes
         return $this->bookings()
                     ->whereNull('canceled_at')
                     ->whereNotNull('starts_at')
-                    ->where('starts_at', '>', new Carbon($startsAt))
-                    ->where('starts_at', '<', new Carbon($endsAt));
+                    ->where('starts_at', '>', Date::parse($startsAt))
+                    ->where('starts_at', '<', Date::parse($endsAt));
     }
 
     /**
@@ -120,7 +121,7 @@ trait BookingScopes
         return $this->bookings()
                     ->whereNull('canceled_at')
                     ->whereNotNull('ends_at')
-                    ->where('ends_at', '<', new Carbon($date));
+                    ->where('ends_at', '<', Date::parse($date));
     }
 
     /**
@@ -135,7 +136,7 @@ trait BookingScopes
         return $this->bookings()
                     ->whereNull('canceled_at')
                     ->whereNotNull('ends_at')
-                    ->where('ends_at', '>', new Carbon($date));
+                    ->where('ends_at', '>', Date::parse($date));
     }
 
     /**
@@ -151,8 +152,8 @@ trait BookingScopes
         return $this->bookings()
                     ->whereNull('canceled_at')
                     ->whereNotNull('ends_at')
-                    ->where('ends_at', '>', new Carbon($startsAt))
-                    ->where('ends_at', '<', new Carbon($endsAt));
+                    ->where('ends_at', '>', Date::parse($startsAt))
+                    ->where('ends_at', '<', Date::parse($endsAt));
     }
 
     /**
@@ -166,7 +167,7 @@ trait BookingScopes
     {
         return $this->bookings()
                     ->whereNotNull('canceled_at')
-                    ->where('canceled_at', '<', new Carbon($date));
+                    ->where('canceled_at', '<', Date::parse($date));
     }
 
     /**
@@ -180,7 +181,7 @@ trait BookingScopes
     {
         return $this->bookings()
                     ->whereNotNull('canceled_at')
-                    ->where('canceled_at', '>', new Carbon($date));
+                    ->where('canceled_at', '>', Date::parse($date));
     }
 
     /**
@@ -195,7 +196,7 @@ trait BookingScopes
     {
         return $this->bookings()
                     ->whereNotNull('canceled_at')
-                    ->where('canceled_at', '>', new Carbon($startsAt))
-                    ->where('canceled_at', '<', new Carbon($endsAt));
+                    ->where('canceled_at', '>', Date::parse($startsAt))
+                    ->where('canceled_at', '<', Date::parse($endsAt));
     }
 }

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookings\Traits;
+namespace Somuoki\Bookings\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Bookings\Models\BookableBooking;
+use Somuoki\Bookings\Models\BookableBooking;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait HasBookings
@@ -85,7 +85,7 @@ trait HasBookings
      * @param string                              $startsAt
      * @param string                              $endsAt
      *
-     * @return \Rinvex\Bookings\Models\BookableBooking
+     * @return \Somuoki\Bookings\Models\BookableBooking
      */
     public function newBooking(Model $bookable, string $startsAt, string $endsAt): BookableBooking
     {

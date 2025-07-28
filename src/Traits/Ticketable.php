@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookings\Traits;
+namespace Somuoki\Bookings\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use Rinvex\Bookings\Models\TicketableBooking;
+use Somuoki\Bookings\Models\TicketableBooking;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait Ticketable
@@ -89,7 +89,7 @@ trait Ticketable
      */
     public function tickets(): MorphMany
     {
-        return $this->morphMany(static::getTicketModel(), 'ticketable', 'ticketable_type', 'ticketable_id');
+        return $this->morphMany($this->getTicketModel(), 'ticketable', 'ticketable_type', 'ticketable_id');
     }
 
     /**
@@ -99,7 +99,7 @@ trait Ticketable
      */
     public function bookings(): MorphMany
     {
-        return $this->morphMany(static::getBookingModel(), 'ticketable', 'ticketable_type', 'ticketable_id');
+        return $this->morphMany($this->getBookingModel(), 'ticketable', 'ticketable_type', 'ticketable_id');
     }
 
     /**
@@ -121,7 +121,7 @@ trait Ticketable
      * @param float                               $paid
      * @param string                              $currency
      *
-     * @return \Rinvex\Bookings\Models\TicketableBooking
+     * @return \Somuoki\Bookings\Models\TicketableBooking
      */
     public function newBooking(Model $customer, float $paid, string $currency): TicketableBooking
     {

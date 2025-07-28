@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Rinvex\Bookings\Models;
+namespace Somuoki\Bookings\Models;
 
 use Spatie\Sluggable\SlugOptions;
-use Rinvex\Support\Traits\HasSlug;
+use Somuoki\Support\Traits\HasSlug;
 use Spatie\EloquentSortable\Sortable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Rinvex\Support\Traits\HasTranslations;
-use Rinvex\Support\Traits\ValidatingTrait;
+use Somuoki\Support\Traits\HasTranslations;
+use Somuoki\Support\Traits\ValidatingTrait;
 use Spatie\EloquentSortable\SortableTrait;
-use Rinvex\Bookings\Traits\Bookable as BookableTrait;
+use Somuoki\Bookings\Traits\Bookable as BookableTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 abstract class Bookable extends Model implements Sortable
