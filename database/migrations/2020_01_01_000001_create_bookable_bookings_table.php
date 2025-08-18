@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -15,7 +16,7 @@ class CreateBookableBookingsTable extends Migration
      */
     public function up(): void
     {
-        Schema::create(config('rinvex.bookings.tables.bookable_bookings'), function (Blueprint $table) {
+        Schema::create(config('somuoki.bookings.tables.bookable_bookings'), function (Blueprint $table) {
             // Columns
             $table->increments('id');
             $table->morphs('bookable');

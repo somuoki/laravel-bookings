@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -15,7 +16,7 @@ class CreateTicketableTicketsTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('rinvex.bookings.tables.ticketable_tickets'), function (Blueprint $table) {
+        Schema::create(Config::get('somuoki.bookings.tables.ticketable_tickets'), function (Blueprint $table) {
             // Columns
             $table->increments('id');
             $table->morphs('ticketable');
